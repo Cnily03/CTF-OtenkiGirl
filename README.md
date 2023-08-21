@@ -1,36 +1,45 @@
-<div align="center">
+# Otenki Girl
 
-<a href="https://ivanlulyf.github.io/OtenkiGirl/"><img src="img/top.jpg" width="260"></a>
+## Install Dependencies
 
-[View Deployment](https://ivanlulyf.github.io/OtenkiGirl/)
+```bash
+npm i --production # For production environment
+npm i # For development environment
+```
 
-[![License](https://img.shields.io/github/license/IvanLuLyf/OtenkiGirl?style=flat-square)](License)
-[![GitHub deployments](https://img.shields.io/github/deployments/IvanLuLyf/OtenkiGirl/github-pages?label=deployment&style=flat-square)](https://ivanlulyf.github.io/OtenkiGirl/)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/IvanLuLyf/OtenkiGirl?style=flat-square)
-![GitHub Repo stars](https://img.shields.io/github/stars/IvanLuLyf/OtenkiGirl?logo=github&style=flat-square)
+## Edit Configurations
 
-</div>
+Create and edit file `config.js` at the root of the project.
 
-# 简介
+Configuration is same as `config.default.js`, and it will cover the default configuration.
 
-模仿《天气之子》中出现的网站
+## Build
 
-纯前端,无其他依赖,后端数据使用[GUN](https://github.com/amark/gun)
+```bash
+npm run build # Build for production environment
+npm run build:dev # Build for development environment
+```
 
-日语翻译 [@MidoriMeng](https://github.com/MidoriMeng)
+## Run
 
-# Description
+Before starting the app, you should init the database.
 
-Imitating the website showed in "Weathering With You"
+```bash
+npm run init
+```
 
-Pure Frontend,dependence free,using [GUN](https://github.com/amark/gun) as backend
+Then you can start the app.
 
-Japanese translation by [@MidoriMeng](https://github.com/MidoriMeng)
+```bash
+npm start # Run for production environment
+npm run dev # Run for development environment
+```
 
-# 説明
+## Change Language
 
-「天気の子」に登場するサイトを実装してみた
+type at front-end console:
 
-フロントエンドのみ、依存関係なし、バックエンドは[GUN](https://github.com/amark/gun)
-
-日本語翻訳 [@MidoriMeng](https://github.com/MidoriMeng)
+```javascript
+setLanguage('ja') // set language for example
+resetLanguage() // reset language
+```
