@@ -5,6 +5,7 @@ const sql = new SQL("wishes");
 const { mergeJSON, createDate } = require("./_components/utils");
 const CONFIG = mergeJSON(require("../config.default"), require("../config"), true);
 const DEFAULT_CONFIG = require("../config.default");
+const LauchTime = new Date();
 
 async function getInfo(timestamp) {
     timestamp = typeof timestamp === "number" ? timestamp : Date.now();
@@ -16,7 +17,7 @@ async function getInfo(timestamp) {
     } catch (e) {
         console.warn(`\x1b[33m${e.message}\x1b[0m`);
         console.warn(`Try using default value ${DEFAULT_CONFIG.min_public_time}.`);
-        minTimestamp = createDate(DEFAULT_CONFIG.min_public_time).getTime();
+        minTimestamp = createDate(DEFAULT_CONFIG.min_public_time, { UTC: false, baseDate: LauchTime }).getTime();
     }
     timestamp = Math.max(timestamp, minTimestamp);
     const data = await sql.all(`SELECT wishid, date, place, contact, reason, timestamp FROM wishes WHERE timestamp >= ?`, [timestamp]).catch(e => { throw e });

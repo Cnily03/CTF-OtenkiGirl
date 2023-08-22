@@ -70,7 +70,7 @@ const DEFAULT_CREATE_DATE_OPTIONS = {
         "HH:mm:ss",
         "HH:mm:ss.fff"
     ],
-    baseDate: undefined
+    // baseDate: undefined
 }
 
 /**
@@ -140,7 +140,9 @@ const createDate = (str, opts) => {
                 // 23:59:59(.999)?
                 let HH = pad(n1, 2), mm = pad(n2, 2), ss = pad(n3, 2),
                     fff = typeof n4 === "undefined" ? undefined : pad(n4, 3).substring(0, 3);
-                return { HH, mm, ss, fff }
+                const o = { HH, mm, ss }
+                if (typeof fff !== "undefined") o.fff = fff;
+                return o;
             } else return {}
         }
         const escapeRegExp = (str) => str.replace(/[.*+?^${}()|\[\]\\]/g, '\\$&'); // $& means the whole matched string
