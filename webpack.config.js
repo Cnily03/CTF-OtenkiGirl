@@ -6,8 +6,8 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 
-const CONFIG = require('./config');
-const DEFAULT_CONFIG = require('./config.default');
+const { mergeJSON } = require("./routes/_components/utils")
+const CONFIG = mergeJSON(require('./config'), require('./config.default'), true);
 
 const MODE = (process.env.NODE_ENV || "production").trim() === "production" ? "production" : "development";
 const IS_DEV = MODE === "development";
@@ -32,7 +32,7 @@ module.exports = {
             directory: path.join(__dirname, './static/v')
         },
         compress: true,
-        port: CONFIG.webpack_dev_port || DEFAULT_CONFIG.webpack_dev_port,
+        port: CONFIG.webpack_dev_port,
     },
 
     module: {
@@ -76,9 +76,9 @@ module.exports = {
             ]
         }),
         new webpack.DefinePlugin({
-            $webpack$_app_name: JSON.stringify(CONFIG.app_name || DEFAULT_CONFIG.app_name),
-            $webpack$_default_lang: JSON.stringify(CONFIG.default_lang || DEFAULT_CONFIG.default_lang),
-            $webpack$_default_language: JSON.stringify(require(path.resolve(__dirname, `./static/lang/${CONFIG.default_lang || DEFAULT_CONFIG.default_lang}.json`), 'utf-8'))
+            $webpack$_app_name: JSON.stringify(CONFIG.app_name),
+            $webpack$_default_lang: JSON.stringify(CONFIG.default_lang),
+            $webpack$_default_language: JSON.stringify(require(path.resolve(__dirname, `./static/lang/${CONFIG.default_lang}.json`), 'utf-8'))
         }),
         new MiniCssExtractPlugin({
             filename: '[name].css'

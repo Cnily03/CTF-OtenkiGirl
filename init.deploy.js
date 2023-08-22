@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const Base58 = require("base-58");
+const { rndID } = require("./routes/_components/utils");
 const SQL = require("./routes/sql");
 
 const rndMs = () => Math.floor(Math.random() * 1000).toString().padStart(3, "0");
@@ -36,7 +36,7 @@ const initialData = [
         "place": "横浜アリーナ",
         "contact": "KEI",
         "reason": "野外ライプは晴れてなきゃ🎶晴れ女さんはじめまして！インディーズバンドのギタ担当、KEIと言います✨次の日曜日は初🌟野外ライプイベントがあるんです！！！",
-        "timestamp": new Date("2013-08-03 09:32." + rndMs()).getTime()
+        "timestamp": new Date("2013-08-03 09:32:26." + rndMs()).getTime()
     },
     {
         "date": "2021-08-12",
@@ -76,26 +76,6 @@ sql.then(_ => {
     })
 })
 
-
-const ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-const rndText = (length) => {
-    return Array.from({ length }, () => ALPHABET[Math.floor(Math.random() * ALPHABET.length)]).join('');
-}
-const timeText = (timestamp) => {
-    timestamp = (typeof timestamp === "number" ? timestamp : Date.now()).toString();
-    let text1 = timestamp.substring(0, timestamp.length / 2);
-    let text2 = timestamp.substring(timestamp.length / 2)
-    let text = "";
-    for (let i = 0; i < text1.length; i++)
-        text += text1[i] + text2[text2.length - 1 - i];
-    if (text2.length > text1.length) text += text2[0];
-    return Base58.encode(rndText(3) + Buffer.from(text)); // length = 20
-}
-const rndID = (length, timestamp) => {
-    const t = timeText(timestamp);
-    if (length < t.length) return t.substring(0, length);
-    else return t + rndText(length - t.length);
-}
 async function insert(data) {
     let date = String(data["date"]), place = String(data["place"]),
         contact = String(data["contact"]), reason = String(data["reason"]);
