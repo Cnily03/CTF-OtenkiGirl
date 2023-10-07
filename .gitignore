@@ -1,5 +1,9 @@
 .idea/
+.vscode/
 node_modules/
 node_modules/**/*
 sql/**/*
 .hintrc
+
+static/v/
+static/sw.js
