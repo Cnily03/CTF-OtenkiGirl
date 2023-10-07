@@ -63,9 +63,9 @@ const DEFAULT_CREATE_DATE_OPTIONS = {
         "yyyy-MM-dd HH:mm:ss",
         "yyyy-MM-dd HH:mm:ss.fff",
         "yyyy-MM-dd",
-        "MM-dd-yyyy",
-        "MM-dd-yyyy HH:mm:ss",
-        "MM-dd-yyyy HH:mm:ss.fff",
+        "MM/dd/yyyy",
+        "MM/dd/yyyy HH:mm:ss",
+        "MM/dd/yyyy HH:mm:ss.fff",
         "MM/dd/yy HH:mm:ss",
         "HH:mm:ss",
         "HH:mm:ss.fff"
@@ -123,11 +123,11 @@ const createDate = (str, opts) => {
             const [n1, n2, n3] = [regres[1], regres[3], regres[5]].map(Number);
             if (1 <= n2 && n2 <= 12 && 1 <= n3 && n3 <= MonthDay(n2, n1)) {
                 // 2020-12-31
-                let yyyy = pad(n1, 4), MM = pad(n2, 2), dd = pad(n3, 2);
+                let yyyy = pad(n1, 1), MM = pad(n2, 2), dd = pad(n3, 2);
                 return { yyyy, MM, dd }
             } else if (1 <= n1 && n1 <= 12 && 1 <= n2 && n2 <= MonthDay(n1, n3)) {
                 // 12-31-2020
-                let yyyy = pad(n3, 4), MM = pad(n1, 2), dd = pad(n2, 2);
+                let yyyy = pad(n3, 1), MM = pad(n1, 2), dd = pad(n2, 2);
                 return { yyyy, MM, dd }
             } else return {}
         }
@@ -150,13 +150,17 @@ const createDate = (str, opts) => {
         // format
         if (Array.isArray(opts.format) && opts.format.length > 0) {
             for (let fmt of opts.format) {
-                let sortTable = ["yy", "yyyy", "MM", "dd", "HH", "mm", "ss", "fff"].filter(f => fmt.includes(f))
-                    .sort((a, b) => fmt.indexOf(a) - fmt.indexOf(b))
+                const regExpr_specifier = escapeRegExp(fmt)
+                    .replace(/yyyy/, "(y{4})").replace(/yy/, "(yy)")
+                    .replace(/MM/, "(MM)").replace(/dd/, "(dd)")
+                    .replace(/HH/, "(HH)").replace(/mm/, "(mm)").replace(/ss/, "(ss)")
+                    .replace(/fff/, "(fff)")
+                let sortTable = new RegExp(`^${regExpr_specifier}$`).exec(fmt).slice(1)
                 const regExpr = escapeRegExp(fmt)
-                    .replace(/yyyy/, "(\\d+)").replace(/yy/, "(\\d+)")
-                    .replace(/MM/, "(\\d+)").replace(/dd/, "(\\d+)")
-                    .replace(/HH/, "(\\d+)").replace(/mm/, "(\\d+)").replace(/ss/, "(\\d+)")
-                    .replace(/fff/, "(\\d+)")
+                    .replace(/yyyy/, "(-?\\d+)").replace(/yy/, "(-?\\d+)")
+                    .replace(/MM/, "(\\d{1,2})").replace(/dd/, "(\\d{1,2})")
+                    .replace(/HH/, "(\\d{1,2})").replace(/mm/, "(\\d{1,2})").replace(/ss/, "(\\d{1,2})")
+                    .replace(/fff/, "(\\d{1,3})")
                 let regres = new RegExp(`^${regExpr}$`).exec(str.trim())
                 if (regres === null) continue
                 const dateObj = opts.baseDate
@@ -180,7 +184,7 @@ const createDate = (str, opts) => {
                 })
                 let { yyyy, MM, dd, HH, mm, ss, fff } = argTable;
 
-                [yyyy, MM, dd, HH, mm, ss, fff] = [pad(yyyy, 4), pad(MM, 2), pad(dd, 2), pad(HH, 2), pad(mm, 2), pad(ss, 2), typeof fff === "undefined" ? undefined : pad(fff, 3)];
+                [yyyy, MM, dd, HH, mm, ss, fff] = [pad(yyyy, 1), pad(MM, 2), pad(dd, 2), pad(HH, 2), pad(mm, 2), pad(ss, 2), typeof fff === "undefined" ? undefined : pad(fff, 3)];
                 const d = new Date(`${yyyy}-${MM}-${dd}T${HH}:${mm}:${ss}` + (typeof fff === "number" ? `.${fff}` : "") + (opts.UTC ? "Z" : ""));
 
                 if (Number.isSafeInteger(d.getTime())) return d;
