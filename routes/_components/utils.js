@@ -83,10 +83,11 @@ const DEFAULT_CREATE_DATE_OPTIONS = {
  * @returns {Date} A Date object.
  */
 const createDate = (str, opts) => {
-    if (typeof opts === "undefined") opts = DEFAULT_CREATE_DATE_OPTIONS
-    if (typeof opts !== "object") opts = { ...DEFAULT_CREATE_DATE_OPTIONS, UTC: Boolean(opts) };
-    opts.UTC = typeof opts.UTC === "undefined" ? DEFAULT_CREATE_DATE_OPTIONS.UTC : Boolean(opts.UTC);
-    opts.format = opts.format || DEFAULT_CREATE_DATE_OPTIONS.format;
+    const CopiedDefaultOptions = copyJSON(DEFAULT_CREATE_DATE_OPTIONS)
+    if (typeof opts === "undefined") opts = CopiedDefaultOptions
+    if (typeof opts !== "object") opts = { ...CopiedDefaultOptions, UTC: Boolean(opts) };
+    opts.UTC = typeof opts.UTC === "undefined" ? CopiedDefaultOptions.UTC : Boolean(opts.UTC);
+    opts.format = opts.format || CopiedDefaultOptions.format;
     if (!Array.isArray(opts.format)) opts.format = [opts.format]
     opts.format = opts.format.filter(f => typeof f === "string")
         .filter(f => {
@@ -185,7 +186,7 @@ const createDate = (str, opts) => {
                 let { yyyy, MM, dd, HH, mm, ss, fff } = argTable;
 
                 [yyyy, MM, dd, HH, mm, ss, fff] = [pad(yyyy, 1), pad(MM, 2), pad(dd, 2), pad(HH, 2), pad(mm, 2), pad(ss, 2), typeof fff === "undefined" ? undefined : pad(fff, 3)];
-                const d = new Date(`${yyyy}-${MM}-${dd}T${HH}:${mm}:${ss}` + (typeof fff === "number" ? `.${fff}` : "") + (opts.UTC ? "Z" : ""));
+                const d = new Date(`${yyyy}-${MM}-${dd}T${HH}:${mm}:${ss}` + (typeof argTable.fff === "number" ? `.${fff}` : "") + (opts.UTC ? "Z" : ""));
 
                 if (Number.isSafeInteger(d.getTime())) return d;
                 else continue;
